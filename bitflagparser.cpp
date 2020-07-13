@@ -51,6 +51,20 @@ int main(int argc, char** argv)
                           argv[0], 1);
     }
 
+    if ([&, argv]() -> bool {
+        constexpr int _help_len = ce_strlen("--help");
+        for (int idx = 0; idx < _help_len; idx++)
+            if (argv[1][idx] != "--help"[idx])
+                return false;
+        return true;
+    }()) {
+        puts("Bitflag parser v" __ver "\r\n"
+             "A tool for separating the individual bitflags from the provided parameter.\r\n"
+             "Build date: " __DATE__ " " __TIME__ "\r\n");
+        return 0;
+    }
+
+    // Check if hex width is supplied
     if (argv[2])
     {
         do
@@ -70,19 +84,6 @@ int main(int argc, char** argv)
             ERR_TERMINATE("Hex width count exceeded maximum width space. (Max is 16 for 8 bytes / 64 bits)", 3);
         }
     }
-
-    if ([&, argv]() -> bool {
-        constexpr int _help_len = ce_strlen("--help");
-        for (int idx = 0; idx < _help_len; idx++)
-            if (argv[1][idx] != "--help"[idx])
-                return false;
-        return true;
-    }()) {
-        puts("Bitflag parser v" __ver "\r\n"
-             "A tool for separating the individual bitflags from the provided parameter.\r\n"
-             "Build date: " __DATE__ " " __TIME__ "\r\n");
-        return 0;
-    }
     
     // Parse the argument, checks if invalid, and determines the type
     do
@@ -90,7 +91,7 @@ int main(int argc, char** argv)
         bfstr_end++;
 
         // Prefix type forcing
-        // Can only force type to binary if the current determined type is binary since if the determined type is decimal it means the param contains a value out of the binary's range (3-9)
+        // Can only force type to binary if the current determined type is binary since if the determined type is decimal it means the param contains a value out of the binary's range (2-9)
         if (bfstr_type == BFT_BIN && (*(bfstr_end + 1) == 'B' || *(bfstr_end + 1) == 'b') )
         {
             break;

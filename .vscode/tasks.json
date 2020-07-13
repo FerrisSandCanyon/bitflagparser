@@ -1,0 +1,108 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+		{
+            "type": "shell",
+			"label": "Build Debug (x86)",
+            "command": "C:\\mingw\\i686-8.1.0-posix-dwarf-rt_v6-rev0\\mingw32\\bin\\g++.exe",
+            "args": [
+                "bitflagparser.cpp",
+                "-o",
+                "bfp_dbg_x86.exe",
+                "-Wall",
+			    "-std=c++17",
+                "-g",
+                "-v",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        
+        {
+            "type": "shell",
+			"label": "Build Debug (x64)",
+            "command": "C:\\mingw\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\bin\\g++.exe",
+            "args": [
+                "bitflagparser.cpp",
+                "-o",
+                "bfp_dbg_x64.exe",
+                "-Wall",
+			    "-std=c++17",
+                "-g",
+                "-v",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+		},
+
+        {
+            "type": "shell",
+            "label": "Build Release (x86)",
+            "command": "C:\\mingw\\i686-8.1.0-posix-dwarf-rt_v6-rev0\\mingw32\\bin\\g++.exe",
+            "args": [
+                "bitflagparser.cpp",
+                "-o",
+                "bfp_rel_x86.exe",
+                "-Wall",
+                "-std=c++17",
+                "-Ofast",
+                "-static-libgcc",
+                "-static-libstdc++",
+                "-v",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+		},
+
+        {
+            "type": "shell",
+            "label": "Build Release (x64)",
+            "command": "C:\\mingw\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\bin\\g++.exe",
+            "args": [
+                "bitflagparser.cpp",
+                "-o",
+                "bfp_rel_x64.exe",
+                "-Wall",
+                "-std=c++17",
+                "-Ofast",
+                "-static-libgcc",
+                "-static-libstdc++",
+                "-v",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+		}
+    ]
+}

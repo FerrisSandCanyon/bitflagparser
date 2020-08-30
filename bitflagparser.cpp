@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-#define __ver "1.0"
+#define __ver "1.1"
 
 #define ERR_TERMINATE(msg, retcode) \
 puts(msg); \
@@ -12,20 +12,12 @@ return retcode;
 printf(msg, arg); \
 return retcode;
 
-enum BITFLAG_TYPE
+enum class BITFLAG_TYPE
 {
     BFT_BIN,
     BFT_DEC,
     BFT_HEX,
     BFT_UNK,
-};
-
-const char* BITFLAG_TYPE_STR[] =
-{
-    "Binary",
-    "Decimal",
-    "Hexadecimal",
-    "Unknown type"
 };
 
 constexpr int ce_strlen(const char* str)
@@ -37,11 +29,11 @@ constexpr int ce_strlen(const char* str)
 
 int main(int argc, char** argv)
 {
-    const char*        bfstr_start  = argv[1]; // Starting point of the bitflag
-    const char*        bfstr_end    = argv[1]; // End point of the bitflag
-    BITFLAG_TYPE       bfstr_type   = BFT_BIN; // Bit flag data type
-    unsigned long long bfstr_result = 0;       // Result of the bitflags parsed from the parameter
-    unsigned int       opt_hexlen   = 0;       // printf width for printing hex values
+    const char*        bfstr_start  = argv[1];               // Starting point of the bitflag
+    const char*        bfstr_end    = argv[1];               // End point of the bitflag
+    BITFLAG_TYPE       bfstr_type   = BITFLAG_TYPE::BFT_BIN; // Bit flag data type
+    unsigned long long bfstr_result = 0;                     // Result of the bitflags parsed from the parameter
+    unsigned int       opt_hexlen   = 0;                     // printf width for printing hex values
 
     // Check if an argument was supplied
     if (!bfstr_start)
@@ -92,43 +84,43 @@ int main(int argc, char** argv)
 
         // Prefix type forcing
         // Can only force type to binary if the current determined type is binary since if the determined type is decimal it means the param contains a value out of the binary's range (2-9)
-        if (bfstr_type == BFT_BIN && (*(bfstr_end + 1) == 'B' || *(bfstr_end + 1) == 'b') )
+        if (bfstr_type == BITFLAG_TYPE::BFT_BIN && (*(bfstr_end + 1) == 'B' || *(bfstr_end + 1) == 'b') )
         {
             break;
         }
         // Can only force type to decimal if the current determined type is either binary or decimal since if the determined type is hexadecimal it means the param contains a value out of the binary and decimal's range (A-F)
-        else if (bfstr_type != BFT_HEX && (*(bfstr_end + 1) == 'D' || *(bfstr_end + 1) == 'd') )
+        else if (bfstr_type != BITFLAG_TYPE::BFT_HEX && (*(bfstr_end + 1) == 'D' || *(bfstr_end + 1) == 'd') )
         {
-            bfstr_type = BFT_DEC;
+            bfstr_type = BITFLAG_TYPE::BFT_DEC;
             break;
         }
         // Can force the type to hexadecimal regardless of current determined type
         else if (*(bfstr_end + 1) == 'H' || *(bfstr_end + 1) == 'h') 
         {
-            bfstr_type = BFT_HEX;
+            bfstr_type = BITFLAG_TYPE::BFT_HEX;
             break;
         }
 
         // Ensures parameter is in binary range
-        if (bfstr_type == BFT_BIN)
+        if (bfstr_type == BITFLAG_TYPE::BFT_BIN)
         {
             if (*bfstr_end == '0' || *bfstr_end == '1')
             {
                 continue;
             }
             else
-                bfstr_type = BFT_DEC;
+                bfstr_type = BITFLAG_TYPE::BFT_DEC;
         }
 
         // Ensures parameter is in numerical range
-        if (bfstr_type == BFT_DEC || bfstr_type == BFT_HEX)
+        if (bfstr_type == BITFLAG_TYPE::BFT_DEC || bfstr_type == BITFLAG_TYPE::BFT_HEX)
         {
             if (*bfstr_end >= '0' && *bfstr_end <= '9')
             {
                 continue;
             }
             else
-                bfstr_type = BFT_HEX;
+                bfstr_type = BITFLAG_TYPE::BFT_HEX;
         }
 
         // Ensures parameter is in hex 10/A-15/F range, numerical hex is checked by the previous statement
@@ -145,7 +137,7 @@ int main(int argc, char** argv)
                 ERR_TERMINATE("Invalid argument. Hex format is invalid.", 2);
             }
 
-            bfstr_type = BFT_HEX;
+            bfstr_type = BITFLAG_TYPE::BFT_HEX;
             continue;
         }
         
@@ -157,21 +149,21 @@ int main(int argc, char** argv)
     {
         switch (bfstr_type)
         {
-            case BFT_BIN:
+            case BITFLAG_TYPE::BFT_BIN:
             {
                 bfstr_result <<= 1;
                 bfstr_result += *bfstr_start == '1' ? 1 : 0;
                 continue;
             }
 
-            case BFT_DEC:
+            case BITFLAG_TYPE::BFT_DEC:
             {
                 bfstr_result *= 10;
                 bfstr_result += *bfstr_start - '0';
                 continue;
             }
 
-            case BFT_HEX:
+            case BITFLAG_TYPE::BFT_HEX:
             {
                 bfstr_result <<= 4;
                 if (*bfstr_start >= '0' && *bfstr_start <= '9')
@@ -183,7 +175,7 @@ int main(int argc, char** argv)
                 continue;
             }
 
-            case BFT_UNK:
+            case BITFLAG_TYPE::BFT_UNK:
             default:
             {
                 ERR_TERMINATE_ARG("Invalid argument or type cannot be determined. At: %c", *bfstr_start, 5);
@@ -192,12 +184,20 @@ int main(int argc, char** argv)
         }
     } while (++bfstr_start <= bfstr_end);    
     
+    static const char* BITFLAG_TYPE_STR[] =
+    {
+        "Binary",
+        "Decimal",
+        "Hexadecimal",
+        "Unknown type"
+    };
+
     // Print information
     printf("\r\n"
            "Type: %s\r\n"
            "Result: 0x%llx\r\n"
            "==================[Bitflags]==================\r\n",
-           BITFLAG_TYPE_STR[bfstr_type], bfstr_result);
+           BITFLAG_TYPE_STR[static_cast<int>(bfstr_type)], bfstr_result);
 
     unsigned long long currentbit = 0x1ull;
 
